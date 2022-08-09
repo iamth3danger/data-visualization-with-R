@@ -1,0 +1,186 @@
+---
+---
+title: "Used Car Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+install.packages("tidyverse")
+install.packages("plotly")
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+```
+
+#new dataset, this is mainly just sorting all the data into two categories that best fit
+```{r}
+cars <- read.csv('usedcars_dataset.csv')
+```
+#splitting dataset by less than four or greater than four because four cylinders are the most common engine
+```{r}
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'three'] <- '<= four'
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'two'] <- '<= four'
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'four'] <- '<= four'
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'five'] <- '>= five'
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'six'] <- '>= five'
+cars["num.of.cylinders"][cars["num.of.cylinders"] == 'eight'] <- '>= five'
+```
+#changed 4wd to fwd because it was a similar price 
+```{r}
+cars["drive.wheels"][cars["drive.wheels"] == '4wd'] <- 'fwd'
+```
+#these were also made by price sedan and wagon are together because those are consumer cars while hardtop convertible and hatchbacks are sportier
+```{r}
+cars["body.style"][cars["body.style"] == "hardtop"] <- "hatchback"
+cars["body.style"][cars["body.style"] == "convertible"] <- "hatchback"
+cars["body.style"][cars["body.style"] == "7"] <- "hatchback"
+cars["body.style"][cars["body.style"] == "wagon"] <- "sedan"
+```
+#I made all the ohcs ohc because theyre basically the same thing. I made the l engine dohc because they were similar price
+```{r}
+cars["engine.type"][cars["engine.type"] == "l"] <- "dohc"
+cars["engine.type"][cars["engine.type"] == "ohcf"] <- "ohc"
+cars["engine.type"][cars["engine.type"] == "ohcv"] <- "ohc"
+cars["engine.type"][cars["engine.type"] == "rotor"] <- "dohc"
+```
+#NA didn't like me so I just made NA t
+```{r}
+cars[cars == ""] <- 't'
+```
+```{r}
+cars['num.of.doors'][cars['num.of.doors'] == 't' ] <- "two"
+```
+#making median and high the same category because there were so little of them
+```{r}
+cars['price_binned'][cars['price_binned'] == 'Median'] <- 'Mid->High'
+cars['price_binned'][cars['price_binned'] == 'High'] <- 'Mid->High'
+```
+#making the binary more like decision tress
+```{r}
+cars['diesel'][cars['diesel'] == '1'] <- 'Yes'
+cars['diesel'][cars['diesel'] == '0'] <- 'No'
+cars['gas'][cars['gas'] == '1'] <- 'Yes'
+cars['gas'][cars['gas'] == '0'] <- 'No'
+```
+
+#All my graphs to figure out my data parse
+```{r}
+ggplot(cars, aes(x=make)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+```{r}
+ggplot(cars, aes(x=drive.wheels)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+ggplot(cars, aes(x=engine.location)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+ggplot(cars, aes(x=num.of.cylinders)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=engine.type)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=aspiration)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=num.of.doors)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=body.style)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=fuel.system)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=price_binned)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+ggplot(cars, aes(x=body.style)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+ggplot(cars, aes(x=engine.type)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+cars['body.style'] <- replace(cars['body.style'], 'hardtop','hatchback')
+
+
+```
+```{r}
+
+ggplot(cars, aes(x = factor(drive.wheels), y = price)) + 
+  geom_bar(stat = "summary", fun = "mean")
+
+``` 
+
+```{r}
+ggplot(cars, aes(x = factor(price_binned), y = price)) + 
+  geom_bar(stat = "summary", fun = "mean")
+```  
+
+```{r}
+ggplot(cars, aes(x=price_binned)) +
+geom_bar() +
+geom_text(stat='count', aes(label=..count..), vjust=-1) +
+theme(axis.text.x = element_text(angle = 90))
+```
+```{r}
+write.csv(cars, 'used_car_binary.csv')
+```
+
+data <- subset(cars, select= c(price,price_binned))
+data

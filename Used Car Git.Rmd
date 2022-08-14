@@ -1,5 +1,4 @@
 ---
----
 title: "Used Car Project"
 output: html_document
 ---
@@ -8,8 +7,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-install.packages("tidyverse")
-install.packages("plotly")
 
 ```{r}
 library(tidyverse)
